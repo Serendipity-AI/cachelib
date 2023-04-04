@@ -132,10 +132,11 @@ class RedisCache(BaseCache):
     def has(self, key: str) -> bool:
         return bool(self._read_client.exists(self.key_prefix + key))
 
-    def clear(self) -> bool:
+    def clear(self, prefix: str = "") -> bool:
         status = 0
-        if self.key_prefix:
-            keys = self._read_client.keys(self.key_prefix + "*")
+        key_prefix = self.key_prefix + prefix
+        if key_prefix:
+            keys = self._read_client.keys(key_prefix + "*")
             if keys:
                 status = self._write_client.delete(*keys)
         else:
